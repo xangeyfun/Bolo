@@ -66,13 +66,13 @@ async def uptime(interaction: discord.Interaction):
         f"> Status Page: <https://status.xangey.dev/>\n"
         f"> GitHub: <https://github.com/xangeyfun/Bolo>\n"
         ephemeral=True,
-        allowed_mentions=discord.AllowedMentions(users=False)
     )
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="coinflip", description="Flip a coin")
-async def coinflip(interaction: discord.Interaction):
+async def coinflip(interaction: discord.Interaction, hidden: bool = False):
     status = None
     member = interaction.user
 
@@ -87,15 +87,15 @@ async def coinflip(interaction: discord.Interaction):
     else:
         result = random.choice(["🪙 Heads", "🪙 Tails"])
 
-    await interaction.response.send_message(f"🪙 Flipping...")
+    await interaction.response.send_message(f"🪙 Flipping...", ephemeral=hidden)
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=result)
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
-@discord.app_commands.describe(question="Ask anything!")
+@discord.app_commands.describe(question="Ask anything!", hidden="hide the command from others")
 @bot.tree.command(name="8ball", description="Get a wise answer from the 8 ball")
-async def ball(interaction: discord.Interaction, question: str):
+async def ball(interaction: discord.Interaction, question: str, hidden: bool = False):
     answers = [
         # Positive
         "It is certain.",
@@ -145,34 +145,36 @@ async def ball(interaction: discord.Interaction, question: str):
         "I flipped a coin, it landed on your face.",
     ]
 
-    await interaction.response.send_message(f"🎱 '{question}'...")
+    await interaction.response.send_message(f"🎱 '{question}'...", ephemeral=hidden)
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=f"🎱 {random.choice(answers)}")
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
-@discord.app_commands.describe(options="Seperated by | max 25 (e.g. option1|option2|option3)")
+@discord.app_commands.describe(options="Seperated by | max 25 (e.g. option1|option2|option3)", hidden="Hide the command from others")
 @bot.tree.command(name="choose", description="Randomly pick between options")
-async def choose(interaction: discord.Interaction, options: str):
+async def choose(interaction: discord.Interaction, options: str, hidden: bool = False):
     choices = options.split("|")
 
     if len(choices) > 25:
         return await interaction.response.send_message(f"❗ Too many options! Max 25, you gave `{len(choices)}`")
 
-    await interaction.response.send_message(f"❓ picking...")
+    await interaction.response.send_message(f"❓ picking...", ephemeral=hidden)
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=f"❓ {random.choice(choices)}")
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="rate", description="Rate something from 1 to 100")
-async def rate(interaction: discord.Interaction):
-    await interaction.response.send_message(f"I'd give it a solid {random.randint(1, 100)}")
+async def rate(interaction: discord.Interaction, hidden: bool = False):
+    await interaction.response.send_message(f"I'd give it a solid {random.randint(1, 100)}", ephemeral=hidden)
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="ship", description="Ship 2 people together")
-async def ship(interaction: discord.Interaction, person1: discord.Member, person2: discord.Member):
+async def ship(interaction: discord.Interaction, person1: discord.Member, person2: discord.Member, hidden: bool = False):
     if person1 == person2:
         return await interaction.response.send_message("❗ Can't be the same member!")
 
@@ -234,12 +236,13 @@ async def ship(interaction: discord.Interaction, person1: discord.Member, person
             text = response["text"]
             emoji = response["emoji"]
 
-    await interaction.response.send_message(f"{person1.mention} {emoji} {person2.mention}\n{text} {percentage}")
+    await interaction.response.send_message(f"{person1.mention} {emoji} {person2.mention}\n{text} {percentage}", ephemeral=hidden)
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="avatar", description="Show someone's avatar")
-async def avatar(interaction: discord.Interaction, member: discord.Member):
+async def avatar(interaction: discord.Interaction, member: discord.Member, hidden: bool = False):
     if not member.avatar:
         return await interaction.response.send_message("❗ This user doesn't have an avatar!")
 
@@ -248,7 +251,7 @@ async def avatar(interaction: discord.Interaction, member: discord.Member):
         title=f"{member.display_name}'s avatar"
     )
     embed.set_image(url=avatar_url)
-    await interaction.response.send_message(embed=embed)
+    await interaction.response.send_message(embed=embed, ephemeral=hidden)
     
 
 if __name__ == "__main__":
