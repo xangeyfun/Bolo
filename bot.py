@@ -245,14 +245,10 @@ async def ship(interaction: discord.Interaction, person1: discord.Member, person
 @discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="avatar", description="Show someone's avatar")
 async def avatar(interaction: discord.Interaction, member: discord.Member, hidden: bool = False):
-    if not member.avatar:
-        return await interaction.response.send_message("❗ This user doesn't have an avatar!")
-
-    avatar_url = member.avatar.url
     embed = discord.Embed(
         title=f"{member.display_name}'s avatar"
     )
-    embed.set_image(url=avatar_url)
+    embed.set_image(url=member.display_avatar.url)
     await interaction.response.send_message(embed=embed, ephemeral=hidden)
     
 @discord.app_commands.allowed_installs(guilds=True, users=False)
