@@ -236,5 +236,20 @@ async def ship(interaction: discord.Interaction, person1: discord.Member, person
 
     await interaction.response.send_message(f"{person1.mention} {emoji} {person2.mention}\n{text} {percentage}")
 
+@discord.app_commands.allowed_installs(guilds=True, users=False)
+@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@bot.tree.command(name="avatar", description="Show someone's avatar")
+async def avatar(interaction: discord.Interaction, member: discord.Member):
+    if not member.avatar:
+        return await interaction.response.send_message("❗ This user doesn't have an avatar!")
+
+    avatar_url = member.avatar.url
+    embed = discord.Embed(
+        title=f"{member.display_name}'s avatar"
+    )
+    embed.set_image(url=avatar_url)
+    await interaction.response.send_message(embed=embed)
+    
+
 if __name__ == "__main__":
     bot.run(TOKEN)
