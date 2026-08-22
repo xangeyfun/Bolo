@@ -170,10 +170,10 @@ async def choose(interaction: discord.Interaction, options: str, hidden: bool = 
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
-@discord.app_commands.describe(hidden="Hide the command from others")
+@discord.app_commands.describe(thing="The thing to rate", hidden="Hide the command from others")
 @bot.tree.command(name="rate", description="Rate something from 1 to 100")
-async def rate(interaction: discord.Interaction, hidden: bool = False):
-    await interaction.response.send_message(f"I'd give it a solid {random.randint(1, 100)}", ephemeral=hidden)
+async def rate(interaction: discord.Interaction, thing: str, hidden: bool = False):
+    await interaction.response.send_message(f"I'd give **{thing}** a solid {random.randint(1, 100)}/100", ephemeral=hidden)
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
