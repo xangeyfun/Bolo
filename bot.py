@@ -5,8 +5,6 @@ import random
 import time
 import os
 
-from matplotlib.pylab import isin
-
 load_dotenv()
 
 intents = discord.Intents.default()
