@@ -48,14 +48,14 @@ async def ping(interaction: discord.Interaction):
     latency = round(bot.latency * 1000)
     await interaction.response.send_message(f"Pong! Latency: {latency}ms", ephemeral=True)
 
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @bot.tree.command(name="github", description="Get the bot's GitHub repository link") #, guild=guild)
 async def github(interaction: discord.Interaction):
     await interaction.response.send_message("You can find the bot's source code on GitHub:\nhttps://github.com/xangeyfun/Bolo", ephemeral=True)
 
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @bot.tree.command(name="uptime", description="Check the bot's uptime") #, guild=guild)
 async def uptime(interaction: discord.Interaction):
     current_time = time.time()
@@ -72,8 +72,8 @@ async def uptime(interaction: discord.Interaction):
         ephemeral=True,
     )
 
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="coinflip", description="Flip a coin")
 async def coinflip(interaction: discord.Interaction, hidden: bool = False):
@@ -98,8 +98,8 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=result)
 
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(question="Ask anything!", hidden="Hide the command from others")
 @bot.tree.command(name="8ball", description="Get a wise answer from the 8 ball")
 async def ball(interaction: discord.Interaction, question: str, hidden: bool = False):
@@ -156,8 +156,8 @@ async def ball(interaction: discord.Interaction, question: str, hidden: bool = F
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=f"🎱 {random.choice(answers)}")
 
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(options="Separated by | max 25 (e.g. option1|option2|option3)", hidden="Hide the command from others")
 @bot.tree.command(name="choose", description="Randomly pick between options")
 async def choose(interaction: discord.Interaction, options: str, hidden: bool = False):
@@ -170,18 +170,18 @@ async def choose(interaction: discord.Interaction, options: str, hidden: bool = 
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=f"❓ {random.choice(choices)}")
 
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(thing="The thing to rate", hidden="Hide the command from others")
 @bot.tree.command(name="rate", description="Rate something from 1 to 100")
 async def rate(interaction: discord.Interaction, thing: str, hidden: bool = False):
     await interaction.response.send_message(f"I'd give **{thing}** a solid {random.randint(1, 100)}/100", ephemeral=hidden)
 
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="ship", description="Ship 2 people together")
-async def ship(interaction: discord.Interaction, person1: discord.Member, person2: discord.Member, hidden: bool = False):
+async def ship(interaction: discord.Interaction, person1: discord.User, person2: discord.User, hidden: bool = False):
     if person1 == person2:
         return await interaction.response.send_message("❗ Can't be the same member!", ephemeral=True)
 
@@ -246,19 +246,19 @@ async def ship(interaction: discord.Interaction, person1: discord.Member, person
 
     await interaction.response.send_message(f"{person1.mention} {emoji} {person2.mention}\n{text} {percentage}", ephemeral=hidden)
 
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="avatar", description="Show someone's avatar")
-async def avatar(interaction: discord.Interaction, member: discord.Member, hidden: bool = False):
+async def avatar(interaction: discord.Interaction, member: discord.User, hidden: bool = False):
     embed = discord.Embed(
         title=f"{member.display_name}'s avatar"
     )
     embed.set_image(url=member.display_avatar.url)
     await interaction.response.send_message(embed=embed, ephemeral=hidden)
     
-@discord.app_commands.allowed_installs(guilds=True, users=False)
-@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="factcheck", description="Fact-check a statement")
 async def factcheck(interaction: discord.Interaction, statement: str, hidden: bool = False):
