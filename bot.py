@@ -1,19 +1,21 @@
 from dotenv import load_dotenv
+from discord.ext import commands
 import discord
 import time
 import os
 
 load_dotenv()
 
-intents = discord.Intents
+intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
-bot = discord.Commands.Bot(command_prefix="$", intents=intents, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help | Bolo"))
+bot = commands.Bot(command_prefix="$", intents=intents, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help | Bolo"))
 TOKEN = os.getenv("TOKEN")
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user.name} ({bot.user.id})")
+    if bot.user:
+        print(f"Logged in as {bot.user.name} ({bot.user.id})")
     print(f"Syncing commands...")
     start = time.time()
     try:
