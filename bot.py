@@ -2,10 +2,13 @@ from dotenv import load_dotenv
 from discord.ext import commands
 import asyncio
 import discord
+import logging
 import random
 import sys
 import time
 import os
+
+log = logging.getLogger("bolo")
 
 load_dotenv()
 
@@ -18,28 +21,39 @@ TOKEN = os.getenv("TOKEN")
 startup = time.time()
 
 async def setup_hook():
-    print("Syncing commands...")
+    log.info("Syncing commands...")
     start = time.time()
     try:
         synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} commands in {time.time() - start} seconds")
-
+        log.info("Synced %d commands in %.2f seconds", len(synced), time.time() - start)
     except Exception as e:
-        print(f"Error in syncing commands: {e}")
+        log.error("Error syncing commands: %s", e)
 
 bot.setup_hook = setup_hook
 
 @bot.event
 async def on_ready():
     if bot.user:
-        print(f"Logged in as {bot.user.name} ({bot.user.id})")
+        log.info("Logged in as %s (%s)", bot.user.name, bot.user.id)
 
 @bot.event
 async def on_interaction(interaction: discord.Interaction):
+    user = f"{interaction.user} ({interaction.user.id})"
+
+    if interaction.guild:
+        place = interaction.guild.name
+        channel_name = getattr(interaction.channel, "name", None)
+        if channel_name:
+            place += f" #{channel_name}"
+    else:
+        place = "DMs"
+
     if interaction.type == discord.InteractionType.application_command:
-        print(f"Command '/{interaction.data['name']}' invoked by '{interaction.user}' in '{interaction.guild}' (ID: {interaction.guild_id})")
+        options = ", ".join(f"{opt['name']}={opt['value']!r}" for opt in (interaction.data.get("options") or []))
+        log.info("/%s (%s) by %s in %s", interaction.data["name"], options, user, place)
     elif interaction.type == discord.InteractionType.component:
-        print(f"Component interaction invoked by '{interaction.user}' in '{interaction.guild}' (ID: {interaction.guild_id})")
+        custom_id = interaction.data.get("custom_id")
+        log.info("Component '%s' pressed by %s in %s", custom_id, user, place)
 
 @discord.app_commands.allowed_installs(guilds=True, users=True)
 @discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
