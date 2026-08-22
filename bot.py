@@ -337,4 +337,9 @@ if __name__ == "__main__":
         print("Error: TOKEN is not set. Add it to your .env file.")
         sys.exit(1)
 
-    bot.run(TOKEN)
+    if sys.stdout.isatty():
+        bot.run(TOKEN)
+    else:
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter("[{levelname:<8}] {name}: {message}", style="{")
+        bot.run(TOKEN, log_handler=handler, log_formatter=formatter)
