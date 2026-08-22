@@ -103,7 +103,9 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
             continue
         for activity in member.activities:
             if isinstance(activity, discord.CustomActivity):
-                status = activity.name
+                emoji = activity.emoji
+                emoji_name = emoji.name if emoji and hasattr(emoji, "name") else emoji
+                status = " ".join(part for part in (activity.name, emoji_name) if part)
                 break
         if status:
             break
