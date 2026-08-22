@@ -157,13 +157,17 @@ async def choose(interaction: discord.Interaction, options: str):
     choices = options.split("|")
 
     if len(choices) > 25:
-        await interaction.response.send_message(f"❗ Too many options! Max 25, you gave `{len(choices)}`")
-        return
+        return await interaction.response.send_message(f"❗ Too many options! Max 25, you gave `{len(choices)}`")
 
     await interaction.response.send_message(f"❓ picking...")
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=f"❓ {random.choice(choices)}")
 
+@discord.app_commands.allowed_installs(guilds=True, users=False)
+@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@bot.tree.command(name="rate", description="Rate something from 1 to 100")
+async def rate(interaction: discord.Interaction):
+    await interaction.response.send_message(f"I'd give it a solid {random.randint(1, 100)}")
 
 if __name__ == "__main__":
     bot.run(TOKEN)
