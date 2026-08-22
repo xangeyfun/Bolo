@@ -87,7 +87,7 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
                 break
 
     if status and "bolo" in status.lower():
-        result = "Heads"
+        result = "🪙 Heads"
     else:
         result = random.choice(["🪙 Heads", "🪙 Tails"])
 
