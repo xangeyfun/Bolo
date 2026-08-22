@@ -341,8 +341,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     if sys.stdout.isatty():
-        bot.run(TOKEN)
+        bot.run(TOKEN, root_logger=True)
     else:
         handler = logging.StreamHandler()
         formatter = logging.Formatter("[{levelname:<8}] {name}: {message}", style="{")
-        bot.run(TOKEN, log_handler=handler, log_formatter=formatter)
+        bot.run(TOKEN, log_handler=handler, log_formatter=formatter, root_logger=True)
