@@ -19,6 +19,23 @@ intents.messages = True
 bot = commands.Bot(command_prefix="$", intents=intents, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="/help | Bolo"))
 TOKEN = os.getenv("TOKEN")
 startup = time.time()
+armed_rigs = {}
+
+OPTIMISTIC_FORECASTS = [
+    "☀️ Endless sunshine with light winds of confidence",
+    "🌤️ Mostly clear skies, zero regrets expected",
+    "🌈 Scattered rainbows followed by free snacks",
+    "😎 Cool breeze with a high chance of main character energy",
+    "🌻 Warm and cozy, perfect for doing absolutely nothing",
+]
+
+PESSIMISTIC_FORECASTS = [
+    "🌧️ Persistent drizzle with bursts of mild regret",
+    "🌩️ Thunderstorms and a side of existential dread",
+    "🌫️ Dense fog of confusion lasting all day",
+    "🥶 Freezing winds, staying in bed is strongly advised",
+    "🌪️ Chaos with scattered responsibilities",
+]
 
 async def setup_hook():
     log.info("Syncing commands...")
@@ -120,11 +137,16 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
         if positions:
             rigged_side = min(positions)[1]
 
-    result = rigged_side or random.choice(["Heads", "Tails"])
+    armed = armed_rigs.pop(interaction.user.id, None)
 
-    if rigged_side:
+    if armed and armed[1] >= time.monotonic():
+        result = armed[0]
+        log.info("/coinflip is rigged via /forecast for %s -> %s", interaction.user, result)
+    elif rigged_side:
+        result = rigged_side
         log.info("/coinflip is rigged for %s -> %s (custom status: %r)", interaction.user, rigged_side, status)
     else:
+        result = random.choice(["Heads", "Tails"])
         log.info("/coinflip is fair for %s", interaction.user)
 
     await interaction.response.send_message("🪙 Flipping...", ephemeral=hidden)
@@ -350,6 +372,32 @@ async def factcheck(interaction: discord.Interaction, statement: str, hidden: bo
     response = random.choice(factcheck_responses[result])
 
     await interaction.response.send_message(f"## 🔎 Fact Check\n**Statement**: {statement}\n{'✅' if result else '❌'} **{response}**", ephemeral=hidden)
+
+@discord.app_commands.allowed_installs(guilds=True, users=True)
+@discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+@discord.app_commands.describe(vibe="How do you feel about tomorrow?", hidden="Hide the command from others")
+@discord.app_commands.choices(vibe=[
+    discord.app_commands.Choice(name="Optimistic ☀️", value="optimistic"),
+    discord.app_commands.Choice(name="Pessimistic 🌧️", value="pessimistic"),
+])
+@bot.tree.command(name="forecast", description="Get tomorrow's forecast")
+async def forecast(interaction: discord.Interaction, vibe: discord.app_commands.Choice[str], hidden: bool = False):
+    if vibe.value == "optimistic":
+        condition = random.choice(OPTIMISTIC_FORECASTS)
+        temp = random.randint(18, 29)
+        luck = random.choice(["blessed", "through the roof", "main character"])
+    else:
+        condition = random.choice(PESSIMISTIC_FORECASTS)
+        temp = random.randint(-9, 7)
+        luck = random.choice(["questionable", "cursed", "do not gamble"])
+
+    armed_rigs[interaction.user.id] = ("Heads" if vibe.value == "optimistic" else "Tails", time.monotonic() + 120)
+    log.info("/forecast armed %s for %s (vibe: %s)", armed_rigs[interaction.user.id][0], interaction.user, vibe.value)
+
+    await interaction.response.send_message(
+        f"🌦️ **Tomorrow's forecast**\n> {condition}\n> 🌡️ {temp}°C\n> 🍀 Luck: **{luck}**",
+        ephemeral=hidden,
+    )
 
 if __name__ == "__main__":
     if not TOKEN:
