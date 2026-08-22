@@ -278,7 +278,7 @@ async def factcheck(interaction: discord.Interaction, statement: str, hidden: bo
     }
 
     result = random.choice([True, False])
-    response = random.choices(factcheck_responses[result])
+    response = random.choice(factcheck_responses[result])
 
     await interaction.response.send_message(f"## 🔎 Fact Check\n**Statement**: {statement}\n{'✅' if result else '❌'} **{response}**", ephemeral=hidden)
 
