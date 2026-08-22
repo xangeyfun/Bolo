@@ -144,5 +144,19 @@ async def ball(interaction: discord.Interaction, question: str):
 
     await interaction.response.send_message(random.choice(answers))
 
+@discord.app_commands.allowed_installs(guilds=True, users=False)
+@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.describe(options="Seperated by | max 25 (e.g. option1|option2|option3)")
+@bot.tree.command(name="choose", description="Randomly pick between options")
+async def choose(interaction: discord.Interaction, options: str):
+    choices = options.split("|")
+
+    if len(choices) > 25:
+        await interaction.response.send_message(f"Too many options! Max 25, you gave `{len(choices)}`")
+        return
+
+    await interaction.response.send_message(random.choice(choices))
+
+
 if __name__ == "__main__":
     bot.run(TOKEN)
