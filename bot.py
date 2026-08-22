@@ -90,13 +90,13 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
                 break
 
     if status and "bolo" in status.lower():
-        result = "🪙 Heads"
+        result = "Heads"
     else:
-        result = random.choice(["🪙 Heads", "🪙 Tails"])
+        result = random.choice(["Heads", "Tails"])
 
     await interaction.response.send_message("🪙 Flipping...", ephemeral=hidden)
     await asyncio.sleep(1)
-    await interaction.edit_original_response(content=result)
+    await interaction.edit_original_response(content=f"🪙 It landed on **{result}**!")
 
 @discord.app_commands.allowed_installs(guilds=True, users=True)
 @discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
@@ -152,30 +152,58 @@ async def ball(interaction: discord.Interaction, question: str, hidden: bool = F
         "I flipped a coin, it landed on your face.",
     ]
 
-    await interaction.response.send_message(f"🎱 '{question}'...", ephemeral=hidden)
+    answer = random.choice(answers)
+    question = question if len(question) <= 100 else question[:97] + "..."
+
+    await interaction.response.send_message("🎱 Shaking the ball...", ephemeral=hidden)
     await asyncio.sleep(1)
-    await interaction.edit_original_response(content=f"🎱 {random.choice(answers)}")
+    await interaction.edit_original_response(content=f"❓ **{question}**\n🎱 {answer}")
 
 @discord.app_commands.allowed_installs(guilds=True, users=True)
 @discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(options="Separated by | max 25 (e.g. option1|option2|option3)", hidden="Hide the command from others")
 @bot.tree.command(name="choose", description="Randomly pick between options")
 async def choose(interaction: discord.Interaction, options: str, hidden: bool = False):
-    choices = options.split("|")
+    choices = [choice.strip() for choice in options.split("|") if choice.strip()]
+
+    if len(choices) < 2:
+        return await interaction.response.send_message("❗ Give at least 2 options separated by `|`, e.g. `pizza|sushi|tacos`", ephemeral=True)
 
     if len(choices) > 25:
         return await interaction.response.send_message(f"❗ Too many options! Max 25, you gave `{len(choices)}`", ephemeral=True)
 
-    await interaction.response.send_message("❓ picking...", ephemeral=hidden)
+    pick = random.choice(choices)
+    thinking = random.choice(["🤔 Thinking...", "⚖️ Weighing my options...", "🎲 Rolling the dice..."])
+
+    await interaction.response.send_message(thinking, ephemeral=hidden)
     await asyncio.sleep(1)
-    await interaction.edit_original_response(content=f"❓ {random.choice(choices)}")
+
+    content = f"🎲 I choose **{pick}**!"
+    options_str = " | ".join(choices)
+    if len(options_str) <= 500:
+        content += f"\n-# Options: {options_str}"
+
+    await interaction.edit_original_response(content=content)
 
 @discord.app_commands.allowed_installs(guilds=True, users=True)
 @discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @discord.app_commands.describe(thing="The thing to rate", hidden="Hide the command from others")
 @bot.tree.command(name="rate", description="Rate something from 1 to 100")
 async def rate(interaction: discord.Interaction, thing: str, hidden: bool = False):
-    await interaction.response.send_message(f"I'd give **{thing}** a solid {random.randint(1, 100)}/100", ephemeral=hidden)
+    score = random.randint(1, 100)
+
+    if score >= 90:
+        vibe = "an absolute masterpiece"
+    elif score >= 70:
+        vibe = "pretty solid ngl"
+    elif score >= 50:
+        vibe = "mid tbh"
+    elif score >= 30:
+        vibe = "kinda rough"
+    else:
+        vibe = "just plain bad"
+
+    await interaction.response.send_message(f"I'd give **{thing}** a **{score}/100** - {vibe}", ephemeral=hidden)
 
 @discord.app_commands.allowed_installs(guilds=True, users=True)
 @discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
@@ -236,7 +264,7 @@ async def ship(interaction: discord.Interaction, person1: discord.User, person2:
 
     # Placeholder vars
     emoji = "♥️"
-    text = "Theyre cute together!"
+    text = "They're cute together!"
 
     for maximum, response in responses.items():
         if percentage <= maximum:
@@ -244,7 +272,13 @@ async def ship(interaction: discord.Interaction, person1: discord.User, person2:
             emoji = response["emoji"]
             break
 
-    await interaction.response.send_message(f"{person1.mention} {emoji} {person2.mention}\n{text} {percentage}", ephemeral=hidden)
+    filled = round(percentage / 10)
+    bar = "█" * filled + "░" * (10 - filled)
+
+    await interaction.response.send_message(
+        f"{person1.mention} 💘 {person2.mention}\n{bar} **{percentage}%**\n{emoji} {text}",
+        ephemeral=hidden,
+    )
 
 @discord.app_commands.allowed_installs(guilds=True, users=True)
 @discord.app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
@@ -275,7 +309,7 @@ async def factcheck(interaction: discord.Interaction, statement: str, hidden: bo
             "Incorrect. Nice try though.",
             "False. The evidence has been destroyed.",
             "Absolutely not. Who told you this??",
-            "False. I consulted the expers (trust me).",
+            "False. I consulted the experts (trust me).",
         ]
     }
 
