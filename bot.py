@@ -253,6 +253,32 @@ async def avatar(interaction: discord.Interaction, member: discord.Member, hidde
     embed.set_image(url=avatar_url)
     await interaction.response.send_message(embed=embed, ephemeral=hidden)
     
+@discord.app_commands.allowed_installs(guilds=True, users=False)
+@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.describe(hidden="Hide the command from others")
+@bot.tree.command(name="factcheck", description="Fact-check a statement")
+async def factcheck(interaction: discord.Interaction, statement: str):
+    factcheck_responses = {
+        True: [
+            "Yep, That's completely true.",
+            "Confirmed. The science checks out.",
+            "After extensive research, I can confirm this.",
+            "True, I have absolutely no evidence to prove otherwise.",
+            "Correct. The council has verified this.",
+        ],
+        False: [
+            "Nope. That's completely false.",
+            "Incorrect. Nice try though.",
+            "False. The evidence has been destroyed.",
+            "Absolutely not. Who told you this??",
+            "False. I consulted the expers (trust me).",
+        ]
+    }
+
+    result = random.choice([True, False])
+    response = random.choices(factcheck_responses[result])
+
+    await interaction.response.send_message(f"## 🔎 Fact Check\n**Statement**: {statement}\n{'✅' if result else '❌'} **{response}**")
 
 if __name__ == "__main__":
     bot.run(TOKEN)
