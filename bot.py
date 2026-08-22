@@ -162,7 +162,7 @@ async def choose(interaction: discord.Interaction, options: str, hidden: bool = 
     choices = options.split("|")
 
     if len(choices) > 25:
-        return await interaction.response.send_message(f"❗ Too many options! Max 25, you gave `{len(choices)}`")
+        return await interaction.response.send_message(f"❗ Too many options! Max 25, you gave `{len(choices)}`", ephemeral=True)
 
     await interaction.response.send_message(f"❓ picking...", ephemeral=hidden)
     await asyncio.sleep(1)
@@ -181,7 +181,7 @@ async def rate(interaction: discord.Interaction, thing: str, hidden: bool = Fals
 @bot.tree.command(name="ship", description="Ship 2 people together")
 async def ship(interaction: discord.Interaction, person1: discord.Member, person2: discord.Member, hidden: bool = False):
     if person1 == person2:
-        return await interaction.response.send_message("❗ Can't be the same member!")
+        return await interaction.response.send_message("❗ Can't be the same member!", ephemeral=True)
 
     percentage = random.randint(1, 100)
 
