@@ -13,6 +13,7 @@ intents.presences = True
 bot = commands.Bot(command_prefix="$", intents=intents, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help | Bolo"))
 TOKEN = os.getenv("TOKEN")
 GAMES_USER_ID = os.getenv("GAMES_USER_ID")
+startup = time.time()
 
 @bot.event
 async def on_ready():
@@ -47,6 +48,25 @@ async def ping(interaction: discord.Interaction):
 @bot.tree.command(name="github", description="Get the bot's GitHub repository link") #, guild=guild)
 async def github(interaction: discord.Interaction):
     await interaction.response.send_message("You can find the bot's source code on GitHub:\nhttps://github.com/xangeyfun/Bolo", ephemeral=True)
+
+@discord.app_commands.allowed_installs(guilds=True, users=False)
+@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@bot.tree.command(name="uptime", description="Check the bot's uptime") #, guild=guild)
+async def uptime(interaction: discord.Interaction):
+    current_time = time.time()
+    seconds = int(current_time - startup)
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    days, hours = divmod(hours, 24)
+    uptime_str = f"{days}d {hours}h {minutes}m {seconds}s"
+    await interaction.response.send_message(
+        f"⏱️ **Bot Uptime**\n> {uptime_str}\n\n"
+        f"🔗 **Links**\n"
+        f"> Status Page: <https://status.xangey.dev/>\n"
+        f"> GitHub: <https://github.com/xangeyfun/Bolo>\n"
+        ephemeral=True,
+        allowed_mentions=discord.AllowedMentions(users=False)
+    )
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
