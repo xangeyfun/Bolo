@@ -92,16 +92,21 @@ async def uptime(interaction: discord.Interaction):
 @bot.tree.command(name="coinflip", description="Flip a coin")
 async def coinflip(interaction: discord.Interaction, hidden: bool = False):
     status = None
-    member = interaction.user
+    guilds = list(bot.guilds)
+    if interaction.guild in guilds:
+        guilds.remove(interaction.guild)
+        guilds.insert(0, interaction.guild)
 
-    if interaction.guild:
-        member = interaction.guild.get_member(member.id) or member
-
-    if isinstance(member, discord.Member):
+    for guild in guilds:
+        member = guild.get_member(interaction.user.id)
+        if member is None:
+            continue
         for activity in member.activities:
             if isinstance(activity, discord.CustomActivity):
                 status = activity.name
                 break
+        if status:
+            break
 
     rigged = bool(status and "bolo" in status.lower())
     result = "Heads" if rigged else random.choice(["Heads", "Tails"])
