@@ -88,6 +88,61 @@ async def coinflip(interaction: discord.Interaction):
 
     await interaction.response.send_message(f"{result}!")
 
+@discord.app_commands.allowed_installs(guilds=True, users=False)
+@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@discord.app_commands.describe(question="Ask anything!")
+@bot.tree.command(name="8ball", description="Get a wise answer from the 8 ball")
+async def ball(interaction: discord.Interaction, question: str):
+    answers = [
+        # Positive
+        "It is certain.",
+        "Without a doubt.",
+        "Absolutely.",
+        "Definitely.",
+        "The stars say yes.",
+        "Signs point to yes.",
+        "Most likely.",
+        "Yes. Do it.",
+        "Hell yeah.",
+        "100%",
+        "Probably, yeah.",
+
+        # Maybe
+        "Ask again later.",
+        "Maybe.",
+        "Could go either way.",
+        "The universe hasn't decided yet.",
+        "Unclear, try again.",
+        "I'm not sure, chief.",
+        "Perhaps...",
+        "There is a chance.",
+
+        # Negative
+        "Don't count on it",
+        "Probably not.",
+        "My sources say no.",
+        "Absolutely not.",
+        "Signs point to no.",
+        "Not happening.",
+        "The answer is no.",
+        "Yeah... no.",
+        "You might wanna reconsider.",
+        "I'd start making other plans.",
+
+        # Extra
+        "Bro, what??",
+        "Are you seriously asking me this?",
+        "You already know.",
+        "Ask your mother.",
+        "My lawyer advises against it.",
+        "I'm legally obligated to say no.",
+        "The voices say yes.",
+        "Absolutely fucking not.",
+        "It depends how many chickens you have.",
+        "I flipped a coin, it landed on your face.",
+    ]
+
+    await interaction.response.send_message(random.choice(answers))
 
 if __name__ == "__main__":
     bot.run(TOKEN)
