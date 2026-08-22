@@ -13,9 +13,8 @@ intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
 intents.messages = True
-bot = commands.Bot(command_prefix="$", intents=intents, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help | Bolo"))
+bot = commands.Bot(command_prefix="$", intents=intents, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="/help | Bolo"))
 TOKEN = os.getenv("TOKEN")
-GAMES_USER_ID = os.getenv("GAMES_USER_ID")
 startup = time.time()
 
 async def setup_hook():
@@ -92,7 +91,7 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
     else:
         result = random.choice(["🪙 Heads", "🪙 Tails"])
 
-    await interaction.response.send_message(f"🪙 Flipping...", ephemeral=hidden)
+    await interaction.response.send_message("🪙 Flipping...", ephemeral=hidden)
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=result)
 
@@ -164,7 +163,7 @@ async def choose(interaction: discord.Interaction, options: str, hidden: bool = 
     if len(choices) > 25:
         return await interaction.response.send_message(f"❗ Too many options! Max 25, you gave `{len(choices)}`", ephemeral=True)
 
-    await interaction.response.send_message(f"❓ picking...", ephemeral=hidden)
+    await interaction.response.send_message("❓ picking...", ephemeral=hidden)
     await asyncio.sleep(1)
     await interaction.edit_original_response(content=f"❓ {random.choice(choices)}")
 
