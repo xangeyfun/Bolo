@@ -17,11 +17,8 @@ TOKEN = os.getenv("TOKEN")
 GAMES_USER_ID = os.getenv("GAMES_USER_ID")
 startup = time.time()
 
-@bot.event
-async def on_ready():
-    if bot.user:
-        print(f"Logged in as {bot.user.name} ({bot.user.id})")
-    print(f"Syncing commands...")
+async def setup_hook():
+    print("Syncing commands...")
     start = time.time()
     try:
         synced = await bot.tree.sync()
@@ -29,7 +26,13 @@ async def on_ready():
 
     except Exception as e:
         print(f"Error in syncing commands: {e}")
-        exit(1)
+
+bot.setup_hook = setup_hook
+
+@bot.event
+async def on_ready():
+    if bot.user:
+        print(f"Logged in as {bot.user.name} ({bot.user.id})")
 
 @bot.event
 async def on_interaction(interaction: discord.Interaction):
