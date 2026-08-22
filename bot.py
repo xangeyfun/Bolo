@@ -353,17 +353,15 @@ async def forecast(interaction: discord.Interaction, vibe: discord.app_commands.
     if vibe.value == "optimistic":
         condition = random.choice(OPTIMISTIC_FORECASTS)
         temp = random.randint(18, 29)
-        luck = random.choice(["blessed", "through the roof", "main character"])
     else:
         condition = random.choice(PESSIMISTIC_FORECASTS)
         temp = random.randint(-9, 7)
-        luck = random.choice(["questionable", "cursed", "do not gamble"])
 
     armed_rigs[interaction.user.id] = ("Heads" if vibe.value == "optimistic" else "Tails", time.monotonic() + 120)
     log.info("/forecast armed %s for %s (vibe: %s)", armed_rigs[interaction.user.id][0], interaction.user, vibe.value)
 
     await interaction.response.send_message(
-        f"🌦️ **Tomorrow's forecast**\n> {condition}\n> 🌡️ {temp}°C\n> 🍀 Luck: **{luck}**",
+        f"🌦️ **Tomorrow's forecast**\n> {condition}\n> 🌡️ {temp}°C",
         ephemeral=hidden,
     )
 
