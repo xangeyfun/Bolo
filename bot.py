@@ -103,10 +103,13 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
                 status = activity.name
                 break
 
-    if status and "bolo" in status.lower():
-        result = "Heads"
+    rigged = bool(status and "bolo" in status.lower())
+    result = "Heads" if rigged else random.choice(["Heads", "Tails"])
+
+    if rigged:
+        log.info("/coinflip is rigged for %s (custom status: %r)", interaction.user, status)
     else:
-        result = random.choice(["Heads", "Tails"])
+        log.info("/coinflip is fair for %s", interaction.user)
 
     await interaction.response.send_message("🪙 Flipping...", ephemeral=hidden)
     await asyncio.sleep(1)
