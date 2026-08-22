@@ -236,6 +236,7 @@ async def ship(interaction: discord.Interaction, person1: discord.Member, person
         if percentage <= maximum:
             text = response["text"]
             emoji = response["emoji"]
+            break
 
     await interaction.response.send_message(f"{person1.mention} {emoji} {person2.mention}\n{text} {percentage}", ephemeral=hidden)
 
