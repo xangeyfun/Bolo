@@ -1,8 +1,11 @@
 from dotenv import load_dotenv
 from discord.ext import commands
 import discord
+import random
 import time
 import os
+
+from matplotlib.pylab import isin
 
 load_dotenv()
 
@@ -11,6 +14,7 @@ intents.members = True
 intents.presences = True
 bot = commands.Bot(command_prefix="$", intents=intents, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help | Bolo"))
 TOKEN = os.getenv("TOKEN")
+GAMES_USER_ID = os.getenv("GAMES_USER_ID")
 
 @bot.event
 async def on_ready():
@@ -45,6 +49,26 @@ async def ping(interaction: discord.Interaction):
 @bot.tree.command(name="github", description="Get the bot's GitHub repository link") #, guild=guild)
 async def github(interaction: discord.Interaction):
     await interaction.response.send_message("You can find the bot's source code on GitHub:\nhttps://github.com/xangeyfun/Bolo", ephemeral=True)
+
+@discord.app_commands.allowed_installs(guilds=True, users=False)
+@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@bot.tree.command(name="coinflip", description="Flip a coin")
+async def coinflip(interaction: discord.Interaction):
+    status = None
+    member = interaction.user
+
+    if isinstance(member, discord.Member):
+        for activity in member.activities:
+            if isinstance(activity, discord.CustomActivity):
+                status = activity.name
+                break
+
+    if status and "Bolo" in status.lower():
+        result = "Heads"
+    else:
+        result = random.choice(["Heads", "Tails"])
+
+    await interaction.response.send_message(f"{result}!")
 
 
 if __name__ == "__main__":
