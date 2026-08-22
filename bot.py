@@ -108,43 +108,11 @@ async def uptime(interaction: discord.Interaction):
 @discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="coinflip", description="Flip a coin")
 async def coinflip(interaction: discord.Interaction, hidden: bool = False):
-    status = None
-    guilds = list(bot.guilds)
-    if interaction.guild in guilds:
-        guilds.remove(interaction.guild)
-        guilds.insert(0, interaction.guild)
-
-    for guild in guilds:
-        member = guild.get_member(interaction.user.id)
-        if member is None:
-            continue
-        for activity in member.activities:
-            if isinstance(activity, discord.CustomActivity):
-                emoji = activity.emoji
-                emoji_name = emoji.name if emoji and hasattr(emoji, "name") else emoji
-                status = " ".join(part for part in (activity.name, emoji_name) if part)
-                break
-        if status:
-            break
-
-    sun_emojis = ("☀️", "☀", "🌞")
-    moon_emojis = ("🌙",)
-
-    rigged_side = None
-    if status:
-        positions = [(status.find(emoji), "Heads") for emoji in sun_emojis if emoji in status]
-        positions += [(status.find(emoji), "Tails") for emoji in moon_emojis if emoji in status]
-        if positions:
-            rigged_side = min(positions)[1]
-
     armed = armed_rigs.pop(interaction.user.id, None)
 
     if armed and armed[1] >= time.monotonic():
         result = armed[0]
         log.info("/coinflip is rigged via /forecast for %s -> %s", interaction.user, result)
-    elif rigged_side:
-        result = rigged_side
-        log.info("/coinflip is rigged for %s -> %s (custom status: %r)", interaction.user, rigged_side, status)
     else:
         result = random.choice(["Heads", "Tails"])
         log.info("/coinflip is fair for %s", interaction.user)
