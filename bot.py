@@ -108,11 +108,20 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
         if status:
             break
 
-    rigged = bool(status and "bolo" in status.lower())
-    result = "Heads" if rigged else random.choice(["Heads", "Tails"])
+    sun_emojis = ("☀️", "☀", "🌞")
+    moon_emojis = ("🌙",)
 
-    if rigged:
-        log.info("/coinflip is rigged for %s (custom status: %r)", interaction.user, status)
+    rigged_side = None
+    if status:
+        positions = [(status.find(emoji), "Heads") for emoji in sun_emojis if emoji in status]
+        positions += [(status.find(emoji), "Tails") for emoji in moon_emojis if emoji in status]
+        if positions:
+            rigged_side = min(positions)[1]
+
+    result = rigged_side or random.choice(["Heads", "Tails"])
+
+    if rigged_side:
+        log.info("/coinflip is rigged for %s -> %s (custom status: %r)", interaction.user, rigged_side, status)
     else:
         log.info("/coinflip is fair for %s", interaction.user)
 
