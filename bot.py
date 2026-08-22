@@ -98,7 +98,7 @@ async def coinflip(interaction: discord.Interaction, hidden: bool = False):
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
-@discord.app_commands.describe(question="Ask anything!", hidden="hide the command from others")
+@discord.app_commands.describe(question="Ask anything!", hidden="Hide the command from others")
 @bot.tree.command(name="8ball", description="Get a wise answer from the 8 ball")
 async def ball(interaction: discord.Interaction, question: str, hidden: bool = False):
     answers = [
@@ -156,7 +156,7 @@ async def ball(interaction: discord.Interaction, question: str, hidden: bool = F
 
 @discord.app_commands.allowed_installs(guilds=True, users=False)
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
-@discord.app_commands.describe(options="Seperated by | max 25 (e.g. option1|option2|option3)", hidden="Hide the command from others")
+@discord.app_commands.describe(options="Separated by | max 25 (e.g. option1|option2|option3)", hidden="Hide the command from others")
 @bot.tree.command(name="choose", description="Randomly pick between options")
 async def choose(interaction: discord.Interaction, options: str, hidden: bool = False):
     choices = options.split("|")
