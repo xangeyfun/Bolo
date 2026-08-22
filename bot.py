@@ -3,6 +3,7 @@ from discord.ext import commands
 import asyncio
 import discord
 import random
+import sys
 import time
 import os
 
@@ -282,4 +283,8 @@ async def factcheck(interaction: discord.Interaction, statement: str, hidden: bo
     await interaction.response.send_message(f"## 🔎 Fact Check\n**Statement**: {statement}\n{'✅' if result else '❌'} **{response}**", ephemeral=hidden)
 
 if __name__ == "__main__":
+    if not TOKEN:
+        print("Error: TOKEN is not set. Add it to your .env file.")
+        sys.exit(1)
+
     bot.run(TOKEN)
