@@ -169,5 +169,72 @@ async def choose(interaction: discord.Interaction, options: str):
 async def rate(interaction: discord.Interaction):
     await interaction.response.send_message(f"I'd give it a solid {random.randint(1, 100)}")
 
+@discord.app_commands.allowed_installs(guilds=True, users=False)
+@discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
+@bot.tree.command(name="ship", description="Ship 2 people together")
+async def ship(interaction: discord.Interaction, person1: discord.Member, person2: discord.Member):
+    if person1 == person2:
+        return await interaction.response.send_message("❗ Can't be the same member!")
+
+    percentage = random.randint(1, 100)
+
+    responses = {
+        10: {
+            "text": "Absolutely not.",
+            "emoji": "💀"
+        },
+        20: {
+            "text": "Not happening.",
+            "emoji": "🪦"
+        },
+        30: {
+            "text": "Yeah... no.",
+            "emoji": "😬"
+        },
+        40: {
+            "text": "There might be something...",
+            "emoji": "👀"
+        },
+        50: {
+            "text": "Could go either way.",
+            "emoji": "🤷"
+        },
+        60: {
+            "text": "Hmm, promising...",
+            "emoji": "👀"
+        },
+        70: {
+            "text": "Okayyy, i see it!",
+            "emoji": "💕"
+        },
+        80: {
+            "text": "Pretty cute together!",
+            "emoji": "🥰"
+        },
+        90: {
+            "text": "Now we're talking!",
+            "emoji": "💖"
+        },
+        99: {
+            "text": "JUST DATE ALREADY!",
+            "emoji": "💘"
+        },
+        100: {
+            "text": "THEY'RE LITERALLY PERFECT.",
+            "emoji": "💍"
+        },
+    }
+
+    # Placeholder vars
+    emoji = "♥️"
+    text = "Theyre cute together!"
+
+    for maximum, response in responses.items():
+        if percentage <= maximum:
+            text = response["text"]
+            emoji = response["emoji"]
+
+    await interaction.response.send_message(f"{person1.mention} {emoji} {person2.mention}\n{text} {percentage}")
+
 if __name__ == "__main__":
     bot.run(TOKEN)
