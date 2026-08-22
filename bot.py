@@ -11,6 +11,7 @@ load_dotenv()
 intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
+intents.messages = True
 bot = commands.Bot(command_prefix="$", intents=intents, status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"/help | Bolo"))
 TOKEN = os.getenv("TOKEN")
 GAMES_USER_ID = os.getenv("GAMES_USER_ID")
@@ -64,7 +65,7 @@ async def uptime(interaction: discord.Interaction):
         f"⏱️ **Bot Uptime**\n> {uptime_str}\n\n"
         f"🔗 **Links**\n"
         f"> Status Page: <https://status.xangey.dev/>\n"
-        f"> GitHub: <https://github.com/xangeyfun/Bolo>\n"
+        f"> GitHub: <https://github.com/xangeyfun/Bolo>\n",
         ephemeral=True,
     )
 
@@ -257,7 +258,7 @@ async def avatar(interaction: discord.Interaction, member: discord.Member, hidde
 @discord.app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
 @discord.app_commands.describe(hidden="Hide the command from others")
 @bot.tree.command(name="factcheck", description="Fact-check a statement")
-async def factcheck(interaction: discord.Interaction, statement: str):
+async def factcheck(interaction: discord.Interaction, statement: str, hidden: bool = False):
     factcheck_responses = {
         True: [
             "Yep, That's completely true.",
@@ -278,7 +279,7 @@ async def factcheck(interaction: discord.Interaction, statement: str):
     result = random.choice([True, False])
     response = random.choices(factcheck_responses[result])
 
-    await interaction.response.send_message(f"## 🔎 Fact Check\n**Statement**: {statement}\n{'✅' if result else '❌'} **{response}**")
+    await interaction.response.send_message(f"## 🔎 Fact Check\n**Statement**: {statement}\n{'✅' if result else '❌'} **{response}**", ephemeral=hidden)
 
 if __name__ == "__main__":
     bot.run(TOKEN)
